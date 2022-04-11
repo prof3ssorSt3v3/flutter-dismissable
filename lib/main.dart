@@ -63,7 +63,10 @@ class _MyHomePageState extends State<MyHomePage> {
         alignment: Alignment.centerRight,
         color: Colors.red,
         child: Padding(
-          child: Icon(Icons.cancel),
+          child: Icon(
+            Icons.cancel,
+            color: Colors.white,
+          ),
           padding: EdgeInsets.all(8.0),
         ),
       ),
@@ -73,19 +76,35 @@ class _MyHomePageState extends State<MyHomePage> {
         return await showDialog<Future<bool>>(
           context: context,
           builder: (BuildContext context) => AlertDialog(
-            title: const Text('Delete Confirmation'),
-            content:
-                const Text('Are you sure that you want to delete this item?'),
+            title: const Text(
+              'Delete Confirmation',
+              style: TextStyle(
+                color: Colors.black87,
+              ),
+            ),
+            content: const Text(
+                'Are you sure that you want to delete this item?',
+                style: TextStyle(color: Colors.black87)),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context, Future(() => false)),
-                child: const Text('Cancel'),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: Colors.black87,
+                  ),
+                ),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context, Future(() => true));
                 },
-                child: const Text('Kill it with Fire'),
+                child: const Text(
+                  'Kill it with Fire',
+                  style: TextStyle(
+                    color: Colors.redAccent,
+                  ),
+                ),
               ),
             ],
           ),
