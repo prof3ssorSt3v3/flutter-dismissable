@@ -26,7 +26,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<String> items = List<String>.generate(25, (int index) {
-    WordPair wp = WordPair.random(top: 100);
+    WordPair wp = WordPair.random(top: 500);
     return '${wp.first} ${wp.second}';
   });
 
@@ -47,20 +47,17 @@ class _MyHomePageState extends State<MyHomePage> {
     return ListTile(
       leading: Icon(Icons.account_circle),
       title: Text(items[index]),
-      trailing: Icon(Icons.airline_seat_legroom_normal),
+      trailing: Icon(Icons.airline_seat_individual_suite),
     );
   }
 
   Widget _buildDismiss(BuildContext context, int index) {
     return Dismissible(
       key: ValueKey<String>(items[index]),
-      child: ListTile(
-        leading: Icon(Icons.account_circle),
-        title: Text(items[index]),
-        trailing: Icon(Icons.airplane_ticket),
-      ),
+      child: _buildList(context, index), //ListTile
+
       background: Container(
-        alignment: Alignment.centerRight,
+        alignment: Alignment.centerLeft, //keep the icon to the right
         color: Colors.red,
         child: Padding(
           child: Icon(
@@ -70,9 +67,13 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: EdgeInsets.all(8.0),
         ),
       ),
+      direction: DismissDirection.endToStart,
       confirmDismiss: (DismissDirection dir) async {
         //confirm the deletion return is Future<bool>
-        // return Future(() => true);
+        // return Future(() => false);
+        //we need to return the boolean that is wrapped inside a Future
+        //need to resolve the Future to get to the boolean
+        // use the await to get to the boolean
         return await showDialog<Future<bool>>(
           context: context,
           builder: (BuildContext context) => AlertDialog(
@@ -87,7 +88,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(color: Colors.black87)),
             actions: <Widget>[
               TextButton(
-                onPressed: () => Navigator.pop(context, Future(() => false)),
+                onPressed: () {
+                  //remove the AlertDialog from the screen
+                  //return the Future containing the true boolean
+                  Navigator.pop(context, Future(() => false));
+                },
                 child: const Text(
                   'Cancel',
                   style: TextStyle(
@@ -97,6 +102,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               TextButton(
                 onPressed: () {
+                  //remove the AlertDialog from the screen
+                  //return the Future containing the true boolean
                   Navigator.pop(context, Future(() => true));
                 },
                 child: const Text(
@@ -110,12 +117,14 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         );
       },
-      direction: DismissDirection.endToStart,
       onDismissed: ((DismissDirection dir) {
+        print(dir);
         //user has swiped far enough
         //update the state list of items
         setState(() {
           items.removeAt(index);
+          // List.removeAt( position in the list )
+          //Call the API first to tell it to delete the data
         });
         //removes the ListTile widget by triggering build()
       }),
