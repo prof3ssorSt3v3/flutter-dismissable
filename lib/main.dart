@@ -57,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: _buildList(context, index), //ListTile
 
       background: Container(
-        alignment: Alignment.centerLeft, //keep the icon to the right
+        alignment: Alignment.centerRight, //keep the icon to the right
         color: Colors.red,
         child: Padding(
           child: Icon(
