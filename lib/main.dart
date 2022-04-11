@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:english_words/english_words.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,8 +25,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<String> items =
-      List<String>.generate(25, (int index) => 'Sample text $index');
+  List<String> items = List<String>.generate(25, (int index) {
+    WordPair wp = WordPair.random(top: 100);
+    return '${wp.first} ${wp.second}';
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _buildList(BuildContext context, int index) {
     return ListTile(
       leading: Icon(Icons.account_circle),
-      title: Text('sample text $index'),
+      title: Text(items[index]),
       trailing: Icon(Icons.water),
     );
   }
@@ -53,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
       key: ValueKey<String>(items[index]),
       child: ListTile(
         leading: Icon(Icons.account_circle),
-        title: Text('sample text $index'),
+        title: Text(items[index]),
         trailing: Icon(Icons.water),
       ),
       background: Container(
