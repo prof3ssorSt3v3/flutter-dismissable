@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return ListTile(
       leading: Icon(Icons.account_circle),
       title: Text(items[index]),
-      trailing: Icon(Icons.water),
+      trailing: Icon(Icons.airline_seat_legroom_normal),
     );
   }
 
@@ -57,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: ListTile(
         leading: Icon(Icons.account_circle),
         title: Text(items[index]),
-        trailing: Icon(Icons.water),
+        trailing: Icon(Icons.airplane_ticket),
       ),
       background: Container(
         alignment: Alignment.centerRight,
