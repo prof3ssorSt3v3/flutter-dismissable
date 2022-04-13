@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
+import 'package:english_words/english_words.dart'; //pub.dev
 
 void main() {
   runApp(const MyApp());
@@ -26,6 +26,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<String> items = List<String>.generate(25, (int index) {
+    //this function is called 25 times and returns 25 Strings
     WordPair wp = WordPair.random(top: 500);
     return '${wp.first} ${wp.second}';
   });
@@ -53,11 +54,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildDismiss(BuildContext context, int index) {
     return Dismissible(
-      key: ValueKey<String>(items[index]),
+      key: ValueKey<String>('$index-${items[index]}'),
       child: _buildList(context, index), //ListTile
-
+      //can also have secondaryBackground:
+      secondaryBackground: Container(
+        //opposite direction of reading
+        alignment: Alignment.centerRight,
+        color: Colors.green,
+        child: Padding(
+          child: Text('You are awesome.'),
+          padding: EdgeInsets.all(8.0),
+        ),
+      ),
       background: Container(
-        alignment: Alignment.centerRight, //keep the icon to the right
+        //in the direction of reading
+        alignment: Alignment.centerLeft, //keep the icon to the right
         color: Colors.red,
         child: Padding(
           child: Icon(
@@ -67,55 +78,63 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: EdgeInsets.all(8.0),
         ),
       ),
-      direction: DismissDirection.endToStart,
+      direction: DismissDirection.horizontal,
+      // horizontal, startToEnd, endToStart, vertical, up, down
       confirmDismiss: (DismissDirection dir) async {
         //confirm the deletion return is Future<bool>
-        // return Future(() => false);
+        // return Future(() => true);
         //we need to return the boolean that is wrapped inside a Future
         //need to resolve the Future to get to the boolean
         // use the await to get to the boolean
-        return await showDialog<Future<bool>>(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            title: const Text(
-              'Delete Confirmation',
-              style: TextStyle(
-                color: Colors.black87,
+        if (dir == DismissDirection.startToEnd) {
+          return await showDialog<Future<bool>>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text(
+                'Delete Confirmation',
+                style: TextStyle(
+                  color: Colors.black87,
+                ),
               ),
+              content:
+                  const Text('Are you sure that you want to delete this item?',
+                      style: TextStyle(
+                        color: Colors.black87,
+                      )),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    //remove the AlertDialog from the screen
+                    //return the Future containing the true boolean
+                    Navigator.pop(context, Future(() => false));
+                  },
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    //remove the AlertDialog from the screen
+                    //return the Future containing the true boolean
+                    Navigator.pop(context, Future(() => true));
+                  },
+                  child: const Text(
+                    'Kill it with Fire',
+                    style: TextStyle(
+                      color: Colors.redAccent,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            content: const Text(
-                'Are you sure that you want to delete this item?',
-                style: TextStyle(color: Colors.black87)),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  //remove the AlertDialog from the screen
-                  //return the Future containing the true boolean
-                  Navigator.pop(context, Future(() => false));
-                },
-                child: const Text(
-                  'Cancel',
-                  style: TextStyle(
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  //remove the AlertDialog from the screen
-                  //return the Future containing the true boolean
-                  Navigator.pop(context, Future(() => true));
-                },
-                child: const Text(
-                  'Kill it with Fire',
-                  style: TextStyle(
-                    color: Colors.redAccent,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
+          );
+        } else {
+          //the green
+          return Future(() => false);
+        }
       },
       onDismissed: ((DismissDirection dir) {
         print(dir);
@@ -124,6 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           items.removeAt(index);
           // List.removeAt( position in the list )
+          // like the JavaScript slice method for Arrays
           //Call the API first to tell it to delete the data
         });
         //removes the ListTile widget by triggering build()
